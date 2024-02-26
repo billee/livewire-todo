@@ -24,17 +24,27 @@ class TodoList extends Component
         session()->flash('success', 'Created.');
     }
 
-    public function search(){
-        // $todos = Todo::where('name', 'like', '%'.$this->search.'%')->get();
-        // $this->resetPage();
-        // return view('livewire.todo-list', compact('todos'));
+    public function delete(Todo $todo){
+        $todo->delete();
+        // session()->flash('success', 'Deleted.');
     }
 
+    public function toggle(int $todoId){
+        $todo = Todo::find($todoId);
+        //dump($todo->completed);
+        // $todo->update([
+        //     'completed' => 1
+        // ]);
+
+        $todo->completed = !$todo->completed;
+        $todo->save();
+    }
 
     public function render()
     {
         $todos = Todo::latest()->where('name', 'like', '%'.$this->search.'%')->paginate(5);
         $this->name = '';
+
         return view('livewire.todo-list', compact('todos'));
     }
 }
